@@ -10,7 +10,22 @@ const addBike = async (req: Request, res: Response, next: NextFunction) => {
     res.status(201).json({
       success: true,
       statusCode: 201,
-      message: 'User Registered successfully ',
+      message: 'Bike added successfully ',
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+const getAllBikes = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const result = await BikeServices.getAllBikeFromDB();
+
+    // send response to client
+    res.status(201).json({
+      success: true,
+      statusCode: 201,
+      message: 'all bikes get successfully ',
       data: result,
     });
   } catch (error) {
@@ -20,4 +35,5 @@ const addBike = async (req: Request, res: Response, next: NextFunction) => {
 
 export const BikeController = {
   addBike,
+  getAllBikes,
 };
