@@ -1,3 +1,4 @@
+import { TUserLoginResponse } from './user.interface';
 import { UserServices } from './user.services';
 import { NextFunction, Request, Response } from 'express';
 
@@ -16,5 +17,21 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
+const login = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const loginData = req.body;
+    const result = await UserServices.userLogin(loginData);
+    // send response to client
+    res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: 'User logged in successfully',
+      token: result.accessToken,
+      data: result.user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
-export const UserController = { createUser };
+export const UserController = { createUser, login };

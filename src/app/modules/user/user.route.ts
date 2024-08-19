@@ -8,5 +8,6 @@ router.get('/', (req, res) => {
 });
 
 router.post('/signup', UserController.createUser);
+router.post('/login', UserController.login);
 
 export const UserRoutes = router;
