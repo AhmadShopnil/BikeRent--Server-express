@@ -6,7 +6,7 @@ const BookingSchema: Schema = new Schema<TBooking>({
   userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   bikeId: { type: Schema.Types.ObjectId, ref: 'Bike', required: true },
   startTime: { type: Date, required: true },
-  returnTime: { type: Date, required: true },
+  returnTime: { type: Date },
   totalCost: { type: Number },
   isReturned: { type: Boolean, default: false },
 });

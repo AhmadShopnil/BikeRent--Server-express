@@ -2,16 +2,21 @@ import { Request, Response, NextFunction } from 'express';
 
 import { BookingServices } from './booking.services';
 
-const addBooking = async (req: Request, res: Response, next: NextFunction) => {
+const addBooking = async (req: any, res: Response, next: NextFunction) => {
   try {
     const bookingData = req.body;
-    const result = await BookingServices.addBookingInToDB(bookingData);
+    const user = req.user;
+
+    const result = await BookingServices.addBookingInToDB({
+      bookingData,
+      user,
+    });
 
     // send response to client
     res.status(201).json({
       success: true,
       statusCode: 201,
-      message: 'Bike returned successfully ',
+      message: 'Rental created successfully',
       data: result,
     });
   } catch (error) {
@@ -24,7 +29,8 @@ const getMyAllBooking = async (
   next: NextFunction,
 ) => {
   try {
-    const result = await BookingServices.getMyAllBookingFromDB();
+    const user = req.user;
+    const result = await BookingServices.getMyAllBookingFromDB(user.userId);
 
     // send response to client
     res.status(201).json({

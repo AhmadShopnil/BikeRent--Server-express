@@ -6,6 +6,11 @@ import config from '../../config';
 import { createToken } from '../../utils/jwtUtils';
 
 const createUserIntoDb = async (payload: TUser) => {
+  const isUserexits = await User.isUserExitsByEmail(payload?.email);
+  if (isUserexits) {
+    throw new AppError(httpStatus.NOT_EXTENDED, 'This user already Registered');
+  }
+
   const createdUser = await User.create(payload);
   return createdUser;
 };
@@ -16,7 +21,7 @@ const userLogin = async (
   const isUserexits = await User.isUserExitsByEmail(payload?.email);
 
   if (!isUserexits) {
-    throw new AppError(httpStatus.NOT_EXTENDED, 'This user not found');
+    throw new AppError(httpStatus.NOT_FOUND, 'This user not found');
   }
 
   const isPasswordMatch = await User.isPasswordMatched(
@@ -31,6 +36,7 @@ const userLogin = async (
   const jwtPayload = {
     userId: isUserexits._id,
     role: isUserexits.role,
+    email: isUserexits.email,
   };
 
   const accessToken = createToken(
