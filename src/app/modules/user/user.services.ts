@@ -1,6 +1,11 @@
 import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
-import { TUser, TUserLoginPayload, TUserLoginResponse } from './user.interface';
+import {
+  TUser,
+  TUserJwtPayload,
+  TUserLoginPayload,
+  TUserLoginResponse,
+} from './user.interface';
 import { User } from './user.model';
 import config from '../../config';
 import { createToken } from '../../utils/jwtUtils';
@@ -12,7 +17,19 @@ const createUserIntoDb = async (payload: TUser) => {
   }
 
   const createdUser = await User.create(payload);
-  return createdUser;
+
+  const userWithoutPassword = {
+    _id: createdUser._id,
+    email: createdUser.email,
+    name: createdUser.name,
+    role: createdUser.role,
+    phone: createdUser.phone,
+    address: createdUser.address,
+    createdAt: createdUser.createdAt,
+    updatedAt: createdUser.updatedAt,
+  };
+
+  return userWithoutPassword;
 };
 
 const userLogin = async (
@@ -45,13 +62,40 @@ const userLogin = async (
     config.jwt_access_expires_in as string,
   );
 
+  // Use Omit to create a new type excluding the password field
+  // const { password, ...userWithoutPassword } = isUserexits;
+
+  const userWithoutPassword = {
+    _id: isUserexits._id,
+    email: isUserexits.email,
+    name: isUserexits.name,
+    role: isUserexits.role,
+    phone: isUserexits.phone,
+    address: isUserexits.address,
+    createdAt: isUserexits.createdAt,
+    updatedAt: isUserexits.updatedAt,
+  };
+
   return {
     accessToken,
-    user: isUserexits,
+    user: userWithoutPassword,
   };
+};
+
+const getMyProfileFormDb = async (payload: TUserJwtPayload) => {
+  const isUserExist = await User.isUserExitsByEmail(payload?.email);
+
+  if (!isUserExist) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Not Found Your Profile');
+  }
+
+  const result = await User.find({ email: payload?.email }).select('-password');
+  return result;
+  //end
 };
 
 export const UserServices = {
   createUserIntoDb,
   userLogin,
+  getMyProfileFormDb,
 };

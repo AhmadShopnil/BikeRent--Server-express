@@ -11,6 +11,10 @@ const moduleRoutes = [
     route: UserRoutes,
   },
   {
+    path: '/users',
+    route: UserRoutes,
+  },
+  {
     path: '/bikes',
     route: BikeRoutes,
   },

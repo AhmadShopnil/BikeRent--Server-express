@@ -3,32 +3,38 @@ import { TUser, TUserModel } from './user.interface';
 import bcrypt from 'bcrypt';
 import config from '../../config';
 
-export const UserSchema = new Schema<TUser, TUserModel>({
-  name: {
-    type: String,
-    require: true,
+export const UserSchema = new Schema<TUser, TUserModel>(
+  {
+    name: {
+      type: String,
+      require: true,
+    },
+    email: {
+      type: String,
+      require: true,
+    },
+    phone: {
+      type: String,
+      require: true,
+    },
+    role: {
+      type: String,
+      enum: ['user', 'admin'],
+    },
+    password: {
+      type: String,
+      require: true,
+    },
+    address: {
+      type: String,
+      require: true,
+    },
   },
-  email: {
-    type: String,
-    require: true,
+
+  {
+    timestamps: true, // This adds `createdAt` and `updatedAt` fields
   },
-  phone: {
-    type: String,
-    require: true,
-  },
-  role: {
-    type: String,
-    enum: ['user', 'admin'],
-  },
-  password: {
-    type: String,
-    require: true,
-  },
-  address: {
-    type: String,
-    require: true,
-  },
-});
+);
 
 UserSchema.pre('save', async function (next) {
   const user = this; // this is the user

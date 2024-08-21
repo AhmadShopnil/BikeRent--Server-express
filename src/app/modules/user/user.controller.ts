@@ -1,4 +1,4 @@
-import { TUserLoginResponse } from './user.interface';
+import { TUserJwtPayload, TUserLoginResponse } from './user.interface';
 import { UserServices } from './user.services';
 import { NextFunction, Request, Response } from 'express';
 
@@ -34,4 +34,24 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const UserController = { createUser, login };
+const getMyProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const user: TUserJwtPayload = req?.user;
+
+    const result = await UserServices.getMyProfileFormDb(user);
+
+    // send response to client
+    res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: 'User profile retrieved successfully',
+      data: result,
+    });
+  } catch (error) {}
+};
+
+export const UserController = { createUser, login, getMyProfile };
