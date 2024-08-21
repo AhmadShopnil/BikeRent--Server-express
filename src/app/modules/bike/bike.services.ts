@@ -33,9 +33,27 @@ const updateBikeByIdIntoDB = async ({
   return updatedBike;
   //End
 };
+const deleteBikeByFormDB = async ({ bikeId }: { bikeId: string }) => {
+  // checking for is bike exist or not and send response
+  const isExistBike = await Bike.findById({ _id: bikeId });
+  if (!isExistBike) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Bike Not found to delete');
+  }
+
+  // deleting bike form database
+  const deleteBike = await Bike.findByIdAndDelete({ _id: bikeId });
+
+  if (!deleteBike) {
+    throw new AppError(httpStatus.NOT_MODIFIED, 'Bike delete faild');
+  }
+
+  return isExistBike;
+  //End
+};
 
 export const BikeServices = {
   addBikeInToDB,
   getAllBikeFromDB,
   updateBikeByIdIntoDB,
+  deleteBikeByFormDB,
 };

@@ -43,8 +43,25 @@ const getMyAllBooking = async (
     next(error);
   }
 };
+const returnBike = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const result = await BookingServices.bikeReturn({ bookingId: id });
+
+    // send response to client
+    res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: 'Bike returned successfully',
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const BookingController = {
   addBooking,
   getMyAllBooking,
+  returnBike,
 };

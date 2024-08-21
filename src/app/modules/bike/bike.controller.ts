@@ -58,9 +58,32 @@ const updateBikeById = async (
     next(error);
   }
 };
+const deleteBikeById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = req?.params;
+    const result = await BikeServices.deleteBikeByFormDB({
+      bikeId: id,
+    });
+
+    // send response to client
+    res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: 'Bike deleted  successfully',
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const BikeController = {
   addBike,
   getAllBikes,
   updateBikeById,
+  deleteBikeById,
 };
