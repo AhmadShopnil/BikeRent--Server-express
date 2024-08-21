@@ -12,5 +12,6 @@ router.get('/', (req, res) => {
 router.post('/signup', UserController.createUser);
 router.post('/login', UserController.login);
 router.get('/me', auth(USER_ROLE.user), UserController.getMyProfile);
+router.put('/me', auth(USER_ROLE.user), UserController.updateMyProfile);
 
 export const UserRoutes = router;

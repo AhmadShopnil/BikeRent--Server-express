@@ -51,7 +51,38 @@ const getMyProfile = async (
       message: 'User profile retrieved successfully',
       data: result,
     });
-  } catch (error) {}
+  } catch (error) {
+    next(error);
+  }
+};
+const updateMyProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { email } = req?.user;
+    const updatedData = req.body;
+    const result = await UserServices.updateMyProfileIntoDb({
+      email,
+      updatedData,
+    });
+
+    // send response to client
+    res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: 'User profile update successfully',
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
-export const UserController = { createUser, login, getMyProfile };
+export const UserController = {
+  createUser,
+  login,
+  getMyProfile,
+  updateMyProfile,
+};

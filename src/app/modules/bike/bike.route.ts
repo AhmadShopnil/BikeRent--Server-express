@@ -5,6 +5,7 @@ import auth from '../../middlewares/auth';
 
 const router = express.Router();
 
+router.put('/:id', BikeController.updateBikeById);
 router.post('/', auth(USER_ROLE.admin), BikeController.addBike);
 router.get('/', BikeController.getAllBikes);
 

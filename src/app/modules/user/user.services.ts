@@ -94,8 +94,36 @@ const getMyProfileFormDb = async (payload: TUserJwtPayload) => {
   //end
 };
 
+const updateMyProfileIntoDb = async ({
+  email,
+  updatedData,
+}: {
+  email: string;
+  updatedData: Partial<TUser>;
+}) => {
+  const isUserExist = await User.isUserExitsByEmail(email);
+  if (!isUserExist) {
+    throw new AppError(httpStatus.NOT_FOUND, 'No User find to update');
+  }
+
+  // Update profile and return the updated document
+  const updatedUser = await User.findOneAndUpdate(
+    { email: email }, // Filter
+    { $set: updatedData }, // Update operation
+    { new: true, fields: '-password' }, // Options: return the updated document and exclude the password field
+  );
+
+  if (!updatedUser) {
+    throw new AppError(httpStatus.NOT_MODIFIED, 'Profile update failed');
+  }
+
+  return updatedUser;
+  //end
+};
+
 export const UserServices = {
   createUserIntoDb,
   userLogin,
   getMyProfileFormDb,
+  updateMyProfileIntoDb,
 };
