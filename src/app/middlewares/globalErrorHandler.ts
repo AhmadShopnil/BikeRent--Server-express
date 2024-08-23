@@ -4,6 +4,7 @@ import { ZodError } from 'zod';
 import AppError from '../errors/AppError';
 import { TErrorMessages } from '../interface/error';
 import handleZodError from '../errors/handleZodError';
+import handleCastError from '../errors/handleCastError';
 
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   // default values for error
@@ -17,12 +18,17 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   ];
 
   if (err instanceof ZodError) {
-    const simplifiedError = handleZodError(err);
-    message = simplifiedError?.message;
+    const errorsimplifiyErrorMessages = handleZodError(err);
+    message = errorsimplifiyErrorMessages?.message;
 
-    statusCode = simplifiedError?.statusCode;
+    statusCode = errorsimplifiyErrorMessages?.statusCode;
 
-    errorMessages = simplifiedError?.errorMessages;
+    errorMessages = errorsimplifiyErrorMessages?.errorMessages;
+  } else if (err?.name === 'CastError') {
+    const errorsimplifiyErrorMessages = handleCastError(err);
+    statusCode = errorsimplifiyErrorMessages?.statusCode;
+    message = errorsimplifiyErrorMessages?.message;
+    errorMessages = errorsimplifiyErrorMessages?.errorMessages;
   } else if (err instanceof AppError) {
     statusCode = err?.statusCode;
     message = err.message;
@@ -42,7 +48,7 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     ];
   }
 
-  //ultimate return
+  // final response
   return res.status(statusCode).json({
     success: false,
     message,
