@@ -29,9 +29,9 @@ const addBookingInToDB = async ({
   }
 
   const modiFiedBookingData = { ...bookingData };
-  modiFiedBookingData.returnTime = null;
-  modiFiedBookingData.isReturned = false;
-  modiFiedBookingData.totalCost = 0;
+  // modiFiedBookingData.returnTime = null;
+  // modiFiedBookingData.isReturned = false;
+  // modiFiedBookingData.totalCost = 0;
   modiFiedBookingData.userId = user?.userId;
 
   const result = await Booking.create(modiFiedBookingData);

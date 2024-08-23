@@ -9,7 +9,7 @@ const createBikeValidationSchema = z.object({
     pricePerHour: z.number(),
     cc: z.number(),
     year: z.number(),
-    isAvailable: z.boolean(),
+    isAvailable: z.boolean().optional(),
   }),
 });
 
