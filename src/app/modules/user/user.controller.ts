@@ -1,3 +1,4 @@
+import { CustomRequest } from '../../interface/CustomRequest';
 import { TUserJwtPayload, TUserLoginResponse } from './user.interface';
 import { UserServices } from './user.services';
 import { NextFunction, Request, Response } from 'express';
@@ -35,12 +36,12 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const getMyProfile = async (
-  req: Request,
+  req: CustomRequest,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const user: TUserJwtPayload = req?.user;
+    const user = req?.user as TUserJwtPayload;
 
     const result = await UserServices.getMyProfileFormDb(user);
 
@@ -56,13 +57,14 @@ const getMyProfile = async (
   }
 };
 const updateMyProfile = async (
-  req: Request,
+  req: CustomRequest,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const { email } = req?.user;
+    const { email } = req?.user as TUserJwtPayload;
     const updatedData = req.body;
+
     const result = await UserServices.updateMyProfileIntoDb({
       email,
       updatedData,

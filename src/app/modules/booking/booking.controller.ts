@@ -1,11 +1,17 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { BookingServices } from './booking.services';
+import { CustomRequest } from '../../interface/CustomRequest';
+import { TUserJwtPayload } from '../user/user.interface';
 
-const addBooking = async (req: any, res: Response, next: NextFunction) => {
+const addBooking = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const bookingData = req.body;
-    const user = req.user;
+    const user = req.user as TUserJwtPayload;
 
     const result = await BookingServices.addBookingInToDB({
       bookingData,
@@ -24,12 +30,12 @@ const addBooking = async (req: any, res: Response, next: NextFunction) => {
   }
 };
 const getMyAllBooking = async (
-  req: Request,
+  req: CustomRequest,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const user = req.user;
+    const user = req.user as TUserJwtPayload;
     const result = await BookingServices.getMyAllBookingFromDB(user.userId);
 
     // send response to client

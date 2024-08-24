@@ -20,8 +20,7 @@ router.post('/login', UserController.login);
 
 router.put(
   '/me',
-  validateRequest(userValidations.createUserValidationSchema),
-  UserController.createUser,
+  validateRequest(userValidations.updateUserValidationSchema),
   auth(USER_ROLE.user),
   UserController.updateMyProfile,
 );

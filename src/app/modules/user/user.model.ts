@@ -36,16 +36,36 @@ export const UserSchema = new Schema<TUser, TUserModel>(
   },
 );
 
+// UserSchema.pre('save', async function (next) {
+//   const user = this; // this is the user
+
+//   // hashing password and save into DB
+//   user.password = await bcrypt.hash(
+//     user.password,
+//     Number(config.bcrypt_salt_rounds),
+//   );
+
+//   next();
+// });
+
 UserSchema.pre('save', async function (next) {
-  const user = this; // this is the user
+  const user = this;
 
-  // hashing password and save into DB
-  user.password = await bcrypt.hash(
-    user.password,
-    Number(config.bcrypt_salt_rounds),
-  );
+  // Only hash the password if it has been modified (or if it's new)
+  if (!user.isModified('password')) {
+    return next(); // Skip the hashing process
+  }
 
-  next();
+  try {
+    // Hash the password
+    user.password = await bcrypt.hash(
+      user.password,
+      Number(config.bcrypt_salt_rounds),
+    );
+    next();
+  } catch (error: any) {
+    next(error);
+  }
 });
 
 // statics method

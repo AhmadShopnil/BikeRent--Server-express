@@ -4,6 +4,7 @@ import { TUserJwtPayload } from '../user/user.interface';
 import { TBooking } from './booking.interface';
 import { Booking } from './booking.model';
 import { Bike } from '../bike/bike.model';
+import { Types } from 'mongoose';
 
 const addBookingInToDB = async ({
   bookingData,
@@ -39,7 +40,7 @@ const addBookingInToDB = async ({
   return result;
 };
 
-const getMyAllBookingFromDB = async (userId: string) => {
+const getMyAllBookingFromDB = async (userId: Types.ObjectId) => {
   const result = await Booking.find({ userId: userId });
 
   if (result.length <= 0) {
@@ -92,8 +93,6 @@ const bikeReturn = async ({ bookingId }: { bookingId: string }) => {
     totalCost: totalCost,
     isReturned: true,
   };
-
-  // console.log(updatedBookingInfo);
 
   const returnedBookingInfo = await Booking.findByIdAndUpdate(
     { _id: bookingId },
