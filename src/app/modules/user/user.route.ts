@@ -7,10 +7,6 @@ import { userValidations } from './user.validation';
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  res.send('from test');
-});
-
 router.post(
   '/signup',
   validateRequest(userValidations.createUserValidationSchema),
@@ -21,9 +17,27 @@ router.post('/login', UserController.login);
 router.put(
   '/me',
   validateRequest(userValidations.updateUserValidationSchema),
-  auth(USER_ROLE.user),
+  auth(USER_ROLE.user, USER_ROLE.admin),
   UserController.updateMyProfile,
 );
-router.get('/me', auth(USER_ROLE.user), UserController.getMyProfile);
+
+router.put(
+  '/makeAdmin/:id',
+
+  auth(USER_ROLE.admin),
+  UserController.makeAdminFormUser,
+);
+router.delete(
+  '/:id',
+
+  auth(USER_ROLE.admin),
+  UserController.deleteSingleUserById,
+);
+router.get(
+  '/me',
+  auth(USER_ROLE.user, USER_ROLE.admin),
+  UserController.getMyProfile,
+);
+router.get('/', auth(USER_ROLE.admin), UserController.getAllUsers);
 
 export const UserRoutes = router;

@@ -29,6 +29,25 @@ const addBooking = async (
     next(error);
   }
 };
+const getAllBooking = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const result = await BookingServices.getAllBookingFromDB();
+
+    // send response to client
+    res.status(201).json({
+      success: true,
+      statusCode: 201,
+      message: 'Rentals retrieved successfully',
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 const getMyAllBooking = async (
   req: CustomRequest,
   res: Response,
@@ -43,6 +62,28 @@ const getMyAllBooking = async (
       success: true,
       statusCode: 201,
       message: 'Rentals retrieved successfully',
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+const getSingBookingById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = req.params;
+    const result = await BookingServices.getBookingByIdFromDB({
+      bookingId: id,
+    });
+
+    // send response to client
+    res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: 'Get Booking data successfully',
       data: result,
     });
   } catch (error) {
@@ -70,4 +111,6 @@ export const BookingController = {
   addBooking,
   getMyAllBooking,
   returnBike,
+  getSingBookingById,
+  getAllBooking,
 };

@@ -5,6 +5,7 @@ import { Bike } from './bike.model';
 const addBike = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const bikeData = req.body;
+
     const result = await BikeServices.addBikeInToDB(bikeData);
 
     // send response to client
@@ -12,6 +13,27 @@ const addBike = async (req: Request, res: Response, next: NextFunction) => {
       success: true,
       statusCode: 201,
       message: 'Bike added successfully ',
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+const getSingleBikeById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = req.params;
+
+    const result = await BikeServices.getSingleBikeFromDbById({ bikeId: id });
+
+    // send response to client
+    res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: 'Bikes retrieved successfully',
       data: result,
     });
   } catch (error) {
@@ -86,4 +108,5 @@ export const BikeController = {
   getAllBikes,
   updateBikeById,
   deleteBikeById,
+  getSingleBikeById,
 };

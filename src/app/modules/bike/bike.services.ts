@@ -12,6 +12,13 @@ const getAllBikeFromDB = async () => {
   const result = await Bike.find();
   return result;
 };
+const getSingleBikeFromDbById = async ({ bikeId }: { bikeId: string }) => {
+  const result = await Bike.findById({ _id: bikeId });
+  if (!result) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Bike record not found');
+  }
+  return result;
+};
 
 const updateBikeByIdIntoDB = async ({
   bikeId,
@@ -56,4 +63,5 @@ export const BikeServices = {
   getAllBikeFromDB,
   updateBikeByIdIntoDB,
   deleteBikeByFormDB,
+  getSingleBikeFromDbById,
 };

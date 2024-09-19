@@ -49,6 +49,24 @@ const getMyAllBookingFromDB = async (userId: Types.ObjectId) => {
 
   return result;
 };
+const getAllBookingFromDB = async () => {
+  const result = await Booking.find();
+
+  if (result.length <= 0) {
+    throw new AppError(httpStatus.NOT_FOUND, 'There is no booking found');
+  }
+
+  return result;
+};
+
+const getBookingByIdFromDB = async ({ bookingId }: { bookingId: string }) => {
+  const result = await Booking.findById({ _id: bookingId });
+
+  if (!result) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Rental record not found');
+  }
+  return result;
+};
 
 const bikeReturn = async ({ bookingId }: { bookingId: string }) => {
   const bookingData = await Booking.findById({ _id: bookingId });
@@ -110,4 +128,6 @@ export const BookingServices = {
   addBookingInToDB,
   getMyAllBookingFromDB,
   bikeReturn,
+  getBookingByIdFromDB,
+  getAllBookingFromDB,
 };

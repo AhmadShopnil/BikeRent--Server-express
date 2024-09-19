@@ -8,13 +8,14 @@ import { bikeValidations } from './bike.validation';
 const router = express.Router();
 
 router.put('/:id', BikeController.updateBikeById);
-router.delete('/:id', BikeController.deleteBikeById);
+router.delete('/:id', auth(USER_ROLE.admin), BikeController.deleteBikeById);
 router.post(
   '/',
   validateRequest(bikeValidations.createBikeValidationSchema),
   auth(USER_ROLE.admin),
   BikeController.addBike,
 );
+router.get('/:id', BikeController.getSingleBikeById);
 router.get('/', BikeController.getAllBikes);
 
 export const BikeRoutes = router;

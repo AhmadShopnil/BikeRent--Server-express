@@ -29,7 +29,24 @@ const createUserIntoDb = async (payload: TUser) => {
     updatedAt: createdUser.updatedAt,
   };
 
-  return userWithoutPassword;
+  const jwtPayload = {
+    userId: createdUser._id,
+    role: createdUser.role,
+    email: createdUser.email,
+  };
+
+  const accessToken = createToken(
+    jwtPayload,
+    config.jwt_access_secret as string,
+    config.jwt_access_expires_in as string,
+  );
+
+  //
+
+  return {
+    accessToken,
+    user: userWithoutPassword,
+  };
 };
 
 const userLogin = async (
@@ -82,6 +99,19 @@ const userLogin = async (
   };
 };
 
+const getAllUsersFormDb = async () => {
+  const result = await User.find().select('-password');
+
+  if (!result) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'Not Found any user from database',
+    );
+  }
+
+  return result;
+  //end
+};
 const getMyProfileFormDb = async (payload: TUserJwtPayload) => {
   const isUserExist = await User.isUserExitsByEmail(payload?.email);
 
@@ -89,7 +119,9 @@ const getMyProfileFormDb = async (payload: TUserJwtPayload) => {
     throw new AppError(httpStatus.NOT_FOUND, 'Not Found Your Profile');
   }
 
-  const result = await User.find({ email: payload?.email }).select('-password');
+  const result = await User.findOne({ email: payload?.email }).select(
+    '-password',
+  );
   return result;
   //end
 };
@@ -121,9 +153,45 @@ const updateMyProfileIntoDb = async ({
   //end
 };
 
+const makeAdminformUserIntoDb = async ({ userId }: { userId: string }) => {
+  const result = await User.findByIdAndUpdate(
+    { _id: userId },
+    { $set: { role: 'admin' } },
+    { new: true },
+  );
+
+  if (!result) {
+    throw new AppError(httpStatus.NOT_MODIFIED, 'Faild to change user Role');
+  }
+
+  return result;
+  //End
+};
+
+const deleteSignleByIdFormDB = async ({ id }: { id: string }) => {
+  // checking for is bike exist or not and send response
+  const isExistUser = await User.findById({ _id: id });
+  if (!isExistUser) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User Not found to delete');
+  }
+
+  // deleting bike form database
+  const deleteBike = await User.findByIdAndDelete({ _id: id });
+
+  if (!deleteBike) {
+    throw new AppError(httpStatus.NOT_MODIFIED, 'User delete faild');
+  }
+
+  return isExistUser;
+  //End
+};
+
 export const UserServices = {
   createUserIntoDb,
   userLogin,
   getMyProfileFormDb,
   updateMyProfileIntoDb,
+  getAllUsersFormDb,
+  makeAdminformUserIntoDb,
+  deleteSignleByIdFormDB,
 };

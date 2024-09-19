@@ -12,7 +12,8 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
       success: true,
       statusCode: 201,
       message: 'User Registered successfully ',
-      data: result,
+      token: result.accessToken,
+      data: result.user,
     });
   } catch (error) {
     next(error);
@@ -35,6 +36,25 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const getAllUsers = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const result = await UserServices.getAllUsersFormDb();
+
+    // send response to client
+    res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: 'All user retrieved successfully',
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 const getMyProfile = async (
   req: CustomRequest,
   res: Response,
@@ -81,10 +101,61 @@ const updateMyProfile = async (
     next(error);
   }
 };
+const makeAdminFormUser = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = req.params;
+
+    console.log(id);
+
+    const result = await UserServices.makeAdminformUserIntoDb({
+      userId: id,
+    });
+
+    // send response to client
+    res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: 'Change user role successfully',
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteSingleUserById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = req?.params;
+    const result = await UserServices.deleteSignleByIdFormDB({
+      id,
+    });
+
+    // send response to client
+    res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: 'User deleted  successfully',
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const UserController = {
   createUser,
   login,
   getMyProfile,
   updateMyProfile,
+  getAllUsers,
+  makeAdminFormUser,
+  deleteSingleUserById,
 };
