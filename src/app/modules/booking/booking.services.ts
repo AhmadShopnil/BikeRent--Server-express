@@ -67,6 +67,14 @@ const getBookingByIdFromDB = async ({ bookingId }: { bookingId: string }) => {
   }
   return result;
 };
+const deleteBookingByIdFromDB = async ({ bookingId }: { bookingId: string }) => {
+  const result = await Booking.findByIdAndDelete({ _id: bookingId });
+
+  if (!result) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Rental record not found');
+  }
+  return result;
+};
 
 const bikeReturn = async ({ bookingId }: { bookingId: string }) => {
   const bookingData = await Booking.findById({ _id: bookingId });
@@ -130,4 +138,5 @@ export const BookingServices = {
   bikeReturn,
   getBookingByIdFromDB,
   getAllBookingFromDB,
+  deleteBookingByIdFromDB
 };

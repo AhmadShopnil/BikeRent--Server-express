@@ -90,9 +90,32 @@ const getSingBookingById = async (
     next(error);
   }
 };
+const deleteSingBookingById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = req.params;
+    const result = await BookingServices.deleteBookingByIdFromDB({
+      bookingId: id,
+    });
+
+    // send response to client
+    res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: 'Delete Booking data successfully',
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 const returnBike = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
+    console.log(id)
     const result = await BookingServices.bikeReturn({ bookingId: id });
 
     // send response to client
@@ -113,4 +136,5 @@ export const BookingController = {
   returnBike,
   getSingBookingById,
   getAllBooking,
+  deleteSingBookingById,
 };
