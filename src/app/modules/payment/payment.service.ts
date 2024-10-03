@@ -15,7 +15,7 @@ const initPayment = async ({
     user: TUserJwtPayload;
   }) => {
 
-    // const wishToRentBike = await Bike.findById({ _id: bookingData?.bikeId });
+    
 
     const transactionId: string = generateTransactionId(user?.userId);
 
