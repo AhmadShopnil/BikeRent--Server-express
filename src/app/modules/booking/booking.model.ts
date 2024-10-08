@@ -9,7 +9,10 @@ const BookingSchema: Schema = new Schema<TBooking>(
     startTime: { type: Date, required: true },
     returnTime: { type: Date, default: null },
     totalCost: { type: Number, default: 0 },
+    pricePerHour: { type: Number},
     isReturned: { type: Boolean, default: false },
+    isAdvanced: { type: Boolean, default: false },
+    transactionId: { type: String},
   },
 
   {

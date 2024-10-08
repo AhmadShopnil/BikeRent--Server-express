@@ -6,6 +6,9 @@ export type TBooking = {
   bikeId: Types.ObjectId;
   startTime: Date;
   returnTime: Date | null;
+  pricePerHour: number;
   totalCost?: number;
   isReturned?: boolean;
+  transactionId?:string;
+  isAdvanced?:boolean
 };

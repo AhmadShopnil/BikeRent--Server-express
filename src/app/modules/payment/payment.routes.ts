@@ -15,6 +15,22 @@ router.post(
 );
 
 
+router.post(
+    '/success/:tran_id',
+    PaymentController.paymentSuccess
+);
+
+router.post(
+    '/failed/:tran_id',
+    PaymentController.paymentFailed
+);
+// router.post(
+//     '/cancel',
+//     PaymentController.initPayment
+// );
+
+
+
 
 export const PaymentRoutes = router;
 

@@ -30,9 +30,8 @@ const addBookingInToDB = async ({
   }
 
   const modiFiedBookingData = { ...bookingData };
-  // modiFiedBookingData.returnTime = null;
-  // modiFiedBookingData.isReturned = false;
-  // modiFiedBookingData.totalCost = 0;
+  
+  modiFiedBookingData.pricePerHour = wishToRentBike?.pricePerHour as number;
   modiFiedBookingData.userId = user?.userId;
 
   const result = await Booking.create(modiFiedBookingData);
@@ -60,13 +59,46 @@ const getAllBookingFromDB = async () => {
 };
 
 const getBookingByIdFromDB = async ({ bookingId }: { bookingId: string }) => {
-  const result = await Booking.findById({ _id: bookingId });
+  const result = await Booking.findById({ _id: bookingId }).populate('bikeId');
+
+ // Convert mongoose document to plain object
+ const bookingObject = result?.toObject();
+
+ // Create a new object with 'bikeId' replaced by 'bikeData'
+ const bookingWithBikeData = {
+   ...bookingObject,
+   bikeData: bookingObject?.bikeId, // Rename 'bikeId' to 'bikeData'
+ };
+
+ // Exclude the 'bikeId' field by creating a new object without it
+ const { bikeId, ...finalBookingData } = bookingWithBikeData;
+
+ return finalBookingData;
+};
+
+const getBookingByTranIdFromDB = async ({ transactionId }: { transactionId: string }) => {
+  const result = await Booking.findOne({ transactionId: transactionId }).populate('bikeId');
 
   if (!result) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Rental record not found');
+    throw new AppError(httpStatus.NOT_FOUND, 'Rental record not found for this transaction id');
   }
-  return result;
+
+  // Convert mongoose document to plain object
+  const bookingObject = result.toObject();
+
+  // Create a new object with 'bikeId' replaced by 'bikeData'
+  const bookingWithBikeData = {
+    ...bookingObject,
+    bikeData: bookingObject.bikeId, // Rename 'bikeId' to 'bikeData'
+  };
+
+  // Exclude the 'bikeId' field by creating a new object without it
+  const { bikeId, ...finalBookingData } = bookingWithBikeData;
+
+  return finalBookingData;
 };
+
+
 const deleteBookingByIdFromDB = async ({ bookingId }: { bookingId: string }) => {
   const result = await Booking.findByIdAndDelete({ _id: bookingId });
 
@@ -138,5 +170,6 @@ export const BookingServices = {
   bikeReturn,
   getBookingByIdFromDB,
   getAllBookingFromDB,
-  deleteBookingByIdFromDB
+  deleteBookingByIdFromDB,
+  getBookingByTranIdFromDB
 };

@@ -68,6 +68,8 @@ const getMyAllBooking = async (
     next(error);
   }
 };
+
+
 const getSingBookingById = async (
   req: Request,
   res: Response,
@@ -90,6 +92,36 @@ const getSingBookingById = async (
     next(error);
   }
 };
+
+
+const getSingBookingByTranId = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { transactionId } = req.params;
+
+
+console.log(transactionId)
+
+    const result = await BookingServices.getBookingByTranIdFromDB({
+      transactionId
+    });
+
+    // send response to client
+    res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: 'Get Booking data successfully',
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
 const deleteSingBookingById = async (
   req: Request,
   res: Response,
@@ -137,4 +169,5 @@ export const BookingController = {
   getSingBookingById,
   getAllBooking,
   deleteSingBookingById,
+  getSingBookingByTranId,
 };
